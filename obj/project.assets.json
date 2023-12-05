@@ -95,6 +95,18 @@
           }
         }
       },
+      "SFX.Random.CSharp/1.0.35": {
+        "type": "package",
+        "dependencies": {
+          "System.Memory": "4.5.4"
+        },
+        "compile": {
+          "lib/netstandard2.1/Random.CSharp.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/Random.CSharp.dll": {}
+        }
+      },
       "Swashbuckle.AspNetCore/6.4.0": {
         "type": "package",
         "dependencies": {
@@ -173,6 +185,15 @@
           "lib/netstandard2.0/System.IdentityModel.Tokens.Jwt.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "System.Memory/4.5.4": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.1/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/_._": {}
         }
       },
       "System.Security.Cryptography.Cng/4.5.0": {
@@ -581,6 +602,19 @@
         "microsoft.openapi.nuspec"
       ]
     },
+    "SFX.Random.CSharp/1.0.35": {
+      "sha512": "8a+XVe3D0rFhbDd6SLMtydxVny4h/RYqClPuWbO7EaXtJh2vmvQ0PE5ElXkwRYfOgWCB00aZXc5AZAPxXRCK7A==",
+      "type": "package",
+      "path": "sfx.random.csharp/1.0.35",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "dingir.png",
+        "lib/netstandard2.1/Random.CSharp.dll",
+        "sfx.random.csharp.1.0.35.nupkg.sha512",
+        "sfx.random.csharp.nuspec"
+      ]
+    },
     "Swashbuckle.AspNetCore/6.4.0": {
       "sha512": "eUBr4TW0up6oKDA5Xwkul289uqSMgY0xGN4pnbOIBqCcN9VKGGaPvHX3vWaG/hvocfGDP+MGzMA0bBBKz2fkmQ==",
       "type": "package",
@@ -681,6 +715,29 @@
         "system.identitymodel.tokens.jwt.nuspec"
       ]
     },
+    "System.Memory/4.5.4": {
+      "sha512": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
+      "type": "package",
+      "path": "system.memory/4.5.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Memory.dll",
+        "lib/net461/System.Memory.xml",
+        "lib/netcoreapp2.1/_._",
+        "lib/netstandard1.1/System.Memory.dll",
+        "lib/netstandard1.1/System.Memory.xml",
+        "lib/netstandard2.0/System.Memory.dll",
+        "lib/netstandard2.0/System.Memory.xml",
+        "ref/netcoreapp2.1/_._",
+        "system.memory.4.5.4.nupkg.sha512",
+        "system.memory.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Security.Cryptography.Cng/4.5.0": {
       "sha512": "WG3r7EyjUe9CMPFSs6bty5doUqT+q9pbI80hlNzo2SkPkZ4VTuZkGWjpp77JB8+uaL4DFPRdBsAY+DX3dBK92A==",
       "type": "package",
@@ -748,6 +805,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "BCrypt.Net >= 0.1.0",
+      "SFX.Random.CSharp >= 1.0.35",
       "Swashbuckle.AspNetCore >= 6.4.0",
       "System.IdentityModel.Tokens.Jwt >= 6.15.1"
     ]
@@ -794,6 +852,10 @@
           "BCrypt.Net": {
             "target": "Package",
             "version": "[0.1.0, )"
+          },
+          "SFX.Random.CSharp": {
+            "target": "Package",
+            "version": "[1.0.35, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

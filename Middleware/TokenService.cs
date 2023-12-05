@@ -2,6 +2,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace api_banco.Middleware
@@ -10,8 +11,11 @@ namespace api_banco.Middleware
     {
         public string GenerateToken(string userId, string secretKey)
         {
+            
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secretKey);
+            var keyGenerator = new RNGCryptoServiceProvider();
+            var key = new byte[16];
+            keyGenerator.GetBytes(key);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

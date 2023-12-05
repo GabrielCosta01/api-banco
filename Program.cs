@@ -1,7 +1,28 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using api_banco.Middleware;
 using api_banco.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+string secretKey = configuration.GetSection("AppSettings:SecretKey").Value;
+
+if (string.IsNullOrEmpty(secretKey))
+{
+    secretKey = Environment.GetEnvironmentVariable("SECRET_KEY");
+}
+
+if (string.IsNullOrEmpty(secretKey))
+{
+    throw new InvalidOperationException("A chave secreta não está configurada.");
+}
 
 // Add services to the container.
 builder.Services.AddSingleton<UserDbContext>();

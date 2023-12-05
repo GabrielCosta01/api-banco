@@ -16,6 +16,7 @@ namespace api_banco.Entities
         }
 
         public Guid Id { get; set; }
+
         public Guid NumberAccount { get; set; }
 
         [Required]

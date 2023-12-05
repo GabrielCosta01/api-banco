@@ -35,3 +35,5 @@ D:\Develop\C#\basic\api-banco\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTo
 D:\Develop\C#\basic\api-banco\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
 D:\Develop\C#\basic\api-banco\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 D:\Develop\C#\basic\api-banco\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\Develop\C#\basic\api-banco\obj\Debug\net8.0\api-banco.sourcelink.json
+D:\Develop\C#\basic\api-banco\bin\Debug\net8.0\Random.CSharp.dll

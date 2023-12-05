@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using BCryptNet = BCrypt.Net.BCrypt;
 using api_banco.Middleware;
 using api_banco.Models;
+using api_banco.Helpers;
 
 namespace api_banco.Controllers
 {
@@ -21,14 +22,40 @@ namespace api_banco.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUserPost(User user)
-        {
-            _context.Users.Add(user);
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+        public IActionResult CreateUserPost(UserCreationModel userCreationModel) {
+
+            var existUser = _context.Users.SingleOrDefault(user => user.Email == userCreationModel.Email);
+
+            if (existUser != null)
+            {
+                return BadRequest("User alredy exist");
+            }
+
+            var newUser = new User
+            {
+                Name = userCreationModel.Name,
+                Email = userCreationModel.Email,
+                Password = userCreationModel.Password,
+                Accountbalance = userCreationModel.Accountbalance,
+            };
+
+            _context.Users.Add(newUser);
+
+            var userModel = new UserModel
+            {
+                Id = newUser.Id,
+                Name = newUser.Name,
+                Password = newUser.Password,
+                NumberAccount = newUser.NumberAccount,
+                Accountbalance = newUser.Accountbalance,
+                Email = newUser.Email,
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = userModel.Id }, userModel);
         }
 
         [HttpPost("/login")]
-        public IActionResult SessionUserPost(UserModel user)
+        public IActionResult SessionUserPost(UserLoginModel userBody)
         {
             // RECEBO EMAIL E SENHA
             // ENCONTRO O USUARIO PELO EMAIL
@@ -36,20 +63,21 @@ namespace api_banco.Controllers
             // SE FOREM IGUAIS, RETORNO UM TOKEN DE ACESSO PARA O USUARIO
             // SE NÃO, FALO QUE EMAIL OU SENHA ESTÃO INCORRETOS "Email or password incorrect"
 
-            var findUser = _context.Users.SingleOrDefault(user => user.Email == user.Email);
+            var findUser = _context.Users.SingleOrDefault(user => user.Email == userBody.Email);
 
             if (findUser == null)
             {
                 return BadRequest("User not found");
             }
 
-            var passwordMatch = BCryptNet.Verify(user.Password, findUser.Password);
+            var passwordMatch = BCryptNet.Verify(userBody.Password, findUser.Password);
 
             if (!passwordMatch) {
                 return BadRequest("Incorret password");
             }
-
-            var token = _tokenService.GenerateToken(findUser.Id, "SECRET_KEY");
+           /* Console.WriteLine(findUser.Id);
+            Console.WriteLine("FIND USER ID ACIMA!"); */
+            var token = _tokenService.GenerateToken(findUser.Id.ToString(), "SECRET_KEY");
 
             return Ok(new { Token = token});
         }

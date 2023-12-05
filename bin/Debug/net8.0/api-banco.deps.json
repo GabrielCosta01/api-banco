@@ -9,6 +9,7 @@
       "api-banco/1.0.0": {
         "dependencies": {
           "BCrypt.Net": "0.1.0",
+          "SFX.Random.CSharp": "1.0.35",
           "Swashbuckle.AspNetCore": "6.4.0",
           "System.IdentityModel.Tokens.Jwt": "6.15.1"
         },
@@ -66,6 +67,17 @@
           }
         }
       },
+      "SFX.Random.CSharp/1.0.35": {
+        "dependencies": {
+          "System.Memory": "4.5.4"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Random.CSharp.dll": {
+            "assemblyVersion": "1.0.35.0",
+            "fileVersion": "1.0.35.0"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore/6.4.0": {
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "6.0.5",
@@ -116,6 +128,7 @@
           }
         }
       },
+      "System.Memory/4.5.4": {},
       "System.Security.Cryptography.Cng/4.5.0": {}
     }
   },
@@ -174,6 +187,13 @@
       "path": "microsoft.openapi/1.2.3",
       "hashPath": "microsoft.openapi.1.2.3.nupkg.sha512"
     },
+    "SFX.Random.CSharp/1.0.35": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8a+XVe3D0rFhbDd6SLMtydxVny4h/RYqClPuWbO7EaXtJh2vmvQ0PE5ElXkwRYfOgWCB00aZXc5AZAPxXRCK7A==",
+      "path": "sfx.random.csharp/1.0.35",
+      "hashPath": "sfx.random.csharp.1.0.35.nupkg.sha512"
+    },
     "Swashbuckle.AspNetCore/6.4.0": {
       "type": "package",
       "serviceable": true,
@@ -208,6 +228,13 @@
       "sha512": "sha512-q3ZLyWmpX4+jW4XITf7Axd+9sC6w2NrQaKcQQT9A8waoknHgaNwSeookpUmPMQDqS0afT9Lh0JYub196vzuzbA==",
       "path": "system.identitymodel.tokens.jwt/6.15.1",
       "hashPath": "system.identitymodel.tokens.jwt.6.15.1.nupkg.sha512"
+    },
+    "System.Memory/4.5.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
+      "path": "system.memory/4.5.4",
+      "hashPath": "system.memory.4.5.4.nupkg.sha512"
     },
     "System.Security.Cryptography.Cng/4.5.0": {
       "type": "package",

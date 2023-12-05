@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "G0RV+w0UO7G2JPIgaDOjDKFoOpRULql12dOZhNjr4Om8hCyiibPLrAeDbvt7ZEbb27fbJF0quFRudSeTahqzfQ==",
+  "dgSpecHash": "P5NaXR+SWXcv4fh6F2t6VRrSFz1sPfm5UxwqN9TaCuryfZxp/ydjiXwzKmLWjm0ugingMvrxWpdO1ZPiN/9BAw==",
   "success": true,
   "projectFilePath": "D:\\Develop\\C#\\basic\\api-banco\\api-banco.csproj",
   "expectedPackageFiles": [
@@ -11,11 +11,13 @@
     "C:\\Users\\gabri\\.nuget\\packages\\microsoft.identitymodel.logging\\6.15.1\\microsoft.identitymodel.logging.6.15.1.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\microsoft.identitymodel.tokens\\6.15.1\\microsoft.identitymodel.tokens.6.15.1.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\gabri\\.nuget\\packages\\sfx.random.csharp\\1.0.35\\sfx.random.csharp.1.0.35.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.4.0\\swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.15.1\\system.identitymodel.tokens.jwt.6.15.1.nupkg.sha512",
+    "C:\\Users\\gabri\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\gabri\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512"
   ],
   "logs": [
