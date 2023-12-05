@@ -57,12 +57,6 @@ namespace api_banco.Controllers
         [HttpPost("/login")]
         public IActionResult SessionUserPost(UserLoginModel userBody)
         {
-            // RECEBO EMAIL E SENHA
-            // ENCONTRO O USUARIO PELO EMAIL
-            // VERIFICO SE A SENHA VINDA DO BANCO DE DADOS BATE COM A SENHA QUE RECEBI COM A REQUISIÇÃO
-            // SE FOREM IGUAIS, RETORNO UM TOKEN DE ACESSO PARA O USUARIO
-            // SE NÃO, FALO QUE EMAIL OU SENHA ESTÃO INCORRETOS "Email or password incorrect"
-
             var findUser = _context.Users.SingleOrDefault(user => user.Email == userBody.Email);
 
             if (findUser == null)
@@ -75,8 +69,7 @@ namespace api_banco.Controllers
             if (!passwordMatch) {
                 return BadRequest("Incorret password");
             }
-           /* Console.WriteLine(findUser.Id);
-            Console.WriteLine("FIND USER ID ACIMA!"); */
+
             var token = _tokenService.GenerateToken(findUser.Id.ToString(), "SECRET_KEY");
 
             return Ok(new { Token = token});
