@@ -1,6 +1,4 @@
-﻿using System;
-using api_banco.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace api_banco.Models
 {

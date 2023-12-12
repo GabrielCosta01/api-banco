@@ -1,4 +1,4 @@
-﻿using api_banco.Persistence;
+﻿using api_banco.Database;
 using System;
 using System.ComponentModel.DataAnnotations;
 using BCryptNet = BCrypt.Net.BCrypt;
@@ -42,7 +42,7 @@ namespace api_banco.Entities
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var dbContext = validationContext.GetService(typeof(UserDbContext)) as UserDbContext;
+            var dbContext = validationContext.GetService(typeof(ApplicationDbContext)) as ApplicationDbContext;
 
             if (dbContext != null)
             {

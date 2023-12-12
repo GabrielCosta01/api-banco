@@ -1,10 +1,8 @@
 ﻿using api_banco.Entities;
-using api_banco.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using BCryptNet = BCrypt.Net.BCrypt;
-using api_banco.Middleware;
 using api_banco.Models;
-using api_banco.Helpers;
+using api_banco.Database;
 
 namespace api_banco.Controllers
 {
@@ -12,10 +10,10 @@ namespace api_banco.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly TokenService _tokenService;
 
-        public UserController(UserDbContext context, TokenService tokenService)
+        public UserController(ApplicationDbContext context, TokenService tokenService)
         {
             _context = context;
             _tokenService = tokenService;
@@ -25,7 +23,7 @@ namespace api_banco.Controllers
         public IActionResult CreateUserPost(UserCreationModel userCreationModel) {
 
             var existUser = _context.Users.SingleOrDefault(user => user.Email == userCreationModel.Email);
-
+            
             if (existUser != null)
             {
                 return BadRequest("User alredy exist");
@@ -40,6 +38,7 @@ namespace api_banco.Controllers
             };
 
             _context.Users.Add(newUser);
+            _context.SaveChanges();
 
             var userModel = new UserModel
             {
@@ -70,7 +69,7 @@ namespace api_banco.Controllers
                 return BadRequest("Incorret password");
             }
 
-            var token = _tokenService.GenerateToken(findUser.Id.ToString(), "SECRET_KEY");
+            var token = _tokenService.GenerateToken(findUser.Id.ToString());
 
             return Ok(new { Token = token});
         }

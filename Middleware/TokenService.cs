@@ -1,39 +1,34 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
-namespace api_banco.Middleware
+public class TokenService
 {
-    public class TokenService
+    private readonly IConfiguration _configuration;
+    private readonly byte[] _secretKey;
+
+    public TokenService(IConfiguration configuration)
     {
-        public string GenerateToken(string userId, string secretKey)
-        {
-            
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var keyGenerator = new RNGCryptoServiceProvider();
-            var key = new byte[16];
-            keyGenerator.GetBytes(key);
+        _configuration = configuration;
+        _secretKey = Encoding.ASCII.GetBytes(_configuration["AppSettings:SecretKey"]);
+    }
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+    public string GenerateToken(string userId)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, userId)
-                }),
-                Expires = DateTime.UtcNow.AddHours(24),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
+                new Claim(ClaimTypes.Name, userId)
+            }),
+            Expires = DateTime.UtcNow.AddHours(24),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_secretKey), SecurityAlgorithms.HmacSha256Signature)
+        };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        internal object GenerateToken(Guid id, string v)
-        {
-            throw new NotImplementedException();
-        }
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 }
