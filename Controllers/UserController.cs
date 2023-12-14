@@ -24,10 +24,7 @@ namespace api_banco.Controllers
 
             var existUser = _context.Users.SingleOrDefault(user => user.Email == userCreationModel.Email);
             
-            if (existUser != null)
-            {
-                return BadRequest("User alredy exist");
-            }
+            if (existUser != null)return BadRequest("User alredy exist");
 
             var newUser = new User
             {
@@ -73,19 +70,68 @@ namespace api_banco.Controllers
 
             return Ok(new { Token = token});
         }
-        
+
         [HttpGet("{id}")] public IActionResult GetById(Guid id)
         {
+            BankTransactionsController bankTransactionsController = new BankTransactionsController(_context);
+
+            string authorization = HttpContext.Request.Headers.Authorization;
+
+            if (authorization == null)return BadRequest(new {message = "Problem with authentication token"});
+
+            string userOwnerForToken = bankTransactionsController.ExtractUserIdFromToken(authorization);
+            var userOwnerForId = _context.Users.SingleOrDefault(user => user.Id == id);
+
+            if (userOwnerForId.Id.ToString() != userOwnerForToken) return BadRequest(new { message = "You dont can make this action" });
+
             var userFind = _context.Users.SingleOrDefault(d => d.Id == id);
 
-            if(userFind == null)
-            {
-                return NotFound();
-            }
+            if(userFind == null)return NotFound(new {message="User not found"});
 
             return Ok(userFind);
         }
 
+        [HttpPatch("update")] public IActionResult PatchUserOwner(UserModelUpdate userFields)
+        {
+            BankTransactionsController bankTransactionsController = new BankTransactionsController(_context);
+            string authorization = HttpContext.Request.Headers.Authorization;
+            
+            if (authorization == null) return BadRequest(new { message = "Problem with authentication token" });
 
+            string userId = bankTransactionsController.ExtractUserIdFromToken(authorization);
+            var userUpdate = _context.Users.SingleOrDefault(user => user.Id.ToString() == userId);
+
+            if (!string.IsNullOrEmpty(userFields.Email) &&
+                _context.Users.Any(u => u.Id != userUpdate.Id && u.Email == userFields.Email))
+            {
+                return BadRequest(new { message = "Email is already in use by another user" });
+            }
+
+            userUpdate.Name = userFields.Name;
+            userUpdate.Email = userFields.Email;
+            userUpdate.Password = userFields.Password;
+            userUpdate.Updated_At = DateTime.UtcNow;
+
+            _context.SaveChanges();
+            
+            return Ok(userUpdate);
+        }
+
+        [HttpDelete("delete")] public IActionResult DeleteUser()
+        {
+            BankTransactionsController bankTransactionsController = new BankTransactionsController(_context);
+
+            string authorization = HttpContext.Request.Headers.Authorization;
+            if (authorization == null) return BadRequest(new { message = "Problem with authentication token" });
+
+            string userId = bankTransactionsController.ExtractUserIdFromToken(authorization);
+            var user = _context.Users.SingleOrDefault(user => user.Id.ToString() == userId);
+
+            user.IsDeleted = true;
+
+            _context.SaveChanges();
+            
+            return Ok(authorization);
+        }
     }
 }

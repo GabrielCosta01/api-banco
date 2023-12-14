@@ -13,7 +13,7 @@ var configuration = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .Build();
 
-string secretKey = configuration.GetSection("AppSettings:SecretKey").Value;
+string secretKey = configuration.GetSection("JWT:Key").Value;
 
 if (string.IsNullOrEmpty(secretKey))
 {
@@ -65,13 +65,14 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    // Configurações do token JWT
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
-        ValidateIssuer = false,
-        ValidateAudience = false
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"])),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = configuration["JWT:Issuer"],
+        ValidAudience = configuration["JWT:Audience"]
     };
 });
 

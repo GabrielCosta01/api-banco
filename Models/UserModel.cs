@@ -44,5 +44,20 @@ namespace api_banco.Models
 
         [Required]
         public string Email { get; set; }
+
+        public DateTime Created_At { get; set; }
+
+        public DateTime Updated_At { get; set; }
+
+        public bool IsDeleted { get; set; }
+    }
+
+    public class UserModelUpdate
+    {
+        public string Name { get; set; }
+
+        public string Password { get; set; }
+
+        public string Email { get; set; }
     }
 }

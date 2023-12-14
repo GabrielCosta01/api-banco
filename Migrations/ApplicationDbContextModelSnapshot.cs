@@ -60,9 +60,15 @@ namespace api_banco.Migrations
                     b.Property<decimal>("Accountbalance")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime>("Created_At")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -74,6 +80,9 @@ namespace api_banco.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("Updated_At")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 

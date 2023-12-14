@@ -1,9 +1,6 @@
 ﻿using api_banco.Database;
 using api_banco.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace api_banco.Controllers
@@ -19,44 +16,50 @@ namespace api_banco.Controllers
             _dbContext = dbContext;
         }
 
-        [Authorize]
+        
         [HttpPost("send/{id}")]
         public IActionResult SendMoneyTo(BankTransactionRequestModel bodyRequest, Guid id) {
-            Console.WriteLine("Entrou no controler");
-            var authorizationHeader = HttpContext.Request.Headers.Authorization;
-            if (!StringValues.IsNullOrEmpty(authorizationHeader) && authorizationHeader.ToString().Contains("Bearer"))
+
+            String authorizationHeader = HttpContext.Request.Headers.Authorization;
+
+            if (authorizationHeader == null) return BadRequest(new {message = "Problem with authentication token" });
+
+            string token = authorizationHeader.ToString();
+            token = token.Replace("Bearer", "");
+            string userIdSendler = ExtractUserIdFromToken(token);
+
+            if (userIdSendler == null)return BadRequest(new { message = "Token incorrect" });
+
+            var userRecipient = _dbContext.Users.SingleOrDefault(user => user.Id == id);
+
+            if (userRecipient == null)return BadRequest(new { message = "Recipient not exist" });
+
+            var userFounded = _dbContext.Users.SingleOrDefault(user => user.Id.ToString() == userIdSendler);
+
+            if (userFounded == null)return BadRequest(new { message = "User not exist" });
+
+            if (userFounded.Accountbalance < bodyRequest.Amount)
             {
-                Console.WriteLine("Entrou no IF DE AUTHORIZATION");
-                string token = authorizationHeader.ToString();
-                token = token.Replace("Bearer", "");
-                string userIdSendler = ExtractUserIdFromToken(token);
-
-                if (userIdSendler == null) return BadRequest("token incorrect");
-
-                var userRecipient = _dbContext.Users.SingleOrDefault(user => user.Id == id);
-
-                if (userRecipient == null) return BadRequest("Recipient not exist");
-
-                var userFounded = _dbContext.Users.SingleOrDefault(user => user.Id.ToString() == userIdSendler);
-
-                if (userFounded == null) return BadRequest("User not exist");
-
-                if (userFounded.Accountbalance! >= bodyRequest.Amount)
+                return BadRequest(new
                 {
-                    return BadRequest("The user does not have enough value to carry out the transaction");
-                }
-
-                userFounded.Accountbalance -= bodyRequest.Amount;
-                userRecipient.Accountbalance += bodyRequest.Amount;
-
-                _dbContext.SaveChanges();
-
+                    message = "The user does not have enough value to carry out the transaction",
+                    AccountBalance = userFounded.Accountbalance
+                });
             }
 
-            return BadRequest("Problem with authentication token");
+            userFounded.Accountbalance -= bodyRequest.Amount;
+            userRecipient.Accountbalance += bodyRequest.Amount;
+
+
+
+            _dbContext.SaveChanges();
+
+            return Ok(new { message = "Transaction successful" });
         }
 
-        private string ExtractUserIdFromToken(string token)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [NonAction]
+        public string ExtractUserIdFromToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -66,12 +69,9 @@ namespace api_banco.Controllers
 
                 if (jwtToken != null)
                 {
-                    var userIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub");
-
-                    if (userIdClaim != null)
-                    {
-                        return userIdClaim.Value;
-                    }
+                    var userIdClaim = jwtToken.Claims.FirstOrDefault((claim) => claim.Type == "unique_name");
+                    
+                    if (userIdClaim != null)return userIdClaim.Value;
                 }
             }
 

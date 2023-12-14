@@ -13,6 +13,8 @@ namespace api_banco.Entities
             Accountbalance = 0;
             Id = Guid.NewGuid();
             NumberAccount = Guid.NewGuid();
+            Created_At = DateTime.UtcNow;
+            IsDeleted = false;
         }
 
         public Guid Id { get; set; }
@@ -35,6 +37,12 @@ namespace api_banco.Entities
         }
 
         public decimal Accountbalance { get; set; }
+
+        public DateTime Created_At { get; set; }
+
+        public DateTime Updated_At { get; set;}
+
+        public bool IsDeleted { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
