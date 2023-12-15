@@ -65,3 +65,4 @@ A API utiliza o Swagger para documentação. Após iniciar a aplicação, acesse
 ## Contato
 
 Para quaisquer dúvidas ou problemas, sinta-se à vontade para entrar em contato.
+- [Linkedin](https://www.linkedin.com/in/gabrielcorreacosta/)
