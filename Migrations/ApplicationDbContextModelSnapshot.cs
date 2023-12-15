@@ -31,22 +31,28 @@ namespace api_banco.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("Recipient")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Sender")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("RecipientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("SendingAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("description")
+                    b.Property<string>("TransactionType")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("BankTransactions");
                 });
@@ -56,9 +62,6 @@ namespace api_banco.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<decimal>("Accountbalance")
-                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("Created_At")
                         .HasColumnType("timestamp with time zone");
@@ -87,6 +90,30 @@ namespace api_banco.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("api_banco.Entities.BankTransaction", b =>
+                {
+                    b.HasOne("api_banco.Entities.User", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("api_banco.Entities.User", "Sender")
+                        .WithMany("Transactions")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("api_banco.Entities.User", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

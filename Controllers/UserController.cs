@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using BCryptNet = BCrypt.Net.BCrypt;
 using api_banco.Models;
 using api_banco.Database;
+using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace api_banco.Controllers
 {
@@ -31,7 +33,6 @@ namespace api_banco.Controllers
                 Name = userCreationModel.Name,
                 Email = userCreationModel.Email,
                 Password = userCreationModel.Password,
-                Accountbalance = userCreationModel.Accountbalance,
             };
 
             _context.Users.Add(newUser);
@@ -43,7 +44,6 @@ namespace api_banco.Controllers
                 Name = newUser.Name,
                 Password = newUser.Password,
                 NumberAccount = newUser.NumberAccount,
-                Accountbalance = newUser.Accountbalance,
                 Email = newUser.Email,
             };
 
@@ -55,10 +55,7 @@ namespace api_banco.Controllers
         {
             var findUser = _context.Users.SingleOrDefault(user => user.Email == userBody.Email);
 
-            if (findUser == null)
-            {
-                return BadRequest("User not found");
-            }
+            if (findUser == null || findUser.IsDeleted == true)return NotFound("User not found");
 
             var passwordMatch = BCryptNet.Verify(userBody.Password, findUser.Password);
 
@@ -71,7 +68,7 @@ namespace api_banco.Controllers
             return Ok(new { Token = token});
         }
 
-        [HttpGet("{id}")] public IActionResult GetById(Guid id)
+        [HttpGet] public IActionResult GetById()
         {
             BankTransactionsController bankTransactionsController = new BankTransactionsController(_context);
 
@@ -80,18 +77,24 @@ namespace api_banco.Controllers
             if (authorization == null)return BadRequest(new {message = "Problem with authentication token"});
 
             string userOwnerForToken = bankTransactionsController.ExtractUserIdFromToken(authorization);
-            var userOwnerForId = _context.Users.SingleOrDefault(user => user.Id == id);
+            var userOwnerForId = _context.Users.SingleOrDefault(user => user.Id.ToString() == userOwnerForToken);
+
+            if (userOwnerForId.IsDeleted == true) return NotFound(new { message = "User not exist" });
 
             if (userOwnerForId.Id.ToString() != userOwnerForToken) return BadRequest(new { message = "You dont can make this action" });
 
-            var userFind = _context.Users.SingleOrDefault(d => d.Id == id);
+            var userFind = _context.Users
+                .Include(u => u.Transactions)
+                .SingleOrDefault(d => d.Id == userOwnerForId.Id);
 
             if(userFind == null)return NotFound(new {message="User not found"});
+
+            userFind.CalculateBalance();
 
             return Ok(userFind);
         }
 
-        [HttpPatch("update")] public IActionResult PatchUserOwner(UserModelUpdate userFields)
+        [HttpPatch("update")] public IActionResult PatchUserOwner(UserModelUpdateRequest userFields)
         {
             BankTransactionsController bankTransactionsController = new BankTransactionsController(_context);
             string authorization = HttpContext.Request.Headers.Authorization;
@@ -101,14 +104,20 @@ namespace api_banco.Controllers
             string userId = bankTransactionsController.ExtractUserIdFromToken(authorization);
             var userUpdate = _context.Users.SingleOrDefault(user => user.Id.ToString() == userId);
 
+            if (userUpdate.IsDeleted == true)return NotFound(new { message = "User not exist" });
+
             if (!string.IsNullOrEmpty(userFields.Email) &&
                 _context.Users.Any(u => u.Id != userUpdate.Id && u.Email == userFields.Email))
             {
                 return BadRequest(new { message = "Email is already in use by another user" });
             }
 
+            if (!string.IsNullOrEmpty(userFields.Email))
+            {
+                userUpdate.Email = userFields.Email;
+            }
+
             userUpdate.Name = userFields.Name;
-            userUpdate.Email = userFields.Email;
             userUpdate.Password = userFields.Password;
             userUpdate.Updated_At = DateTime.UtcNow;
 
@@ -131,7 +140,7 @@ namespace api_banco.Controllers
 
             _context.SaveChanges();
             
-            return Ok(authorization);
+            return Ok();
         }
     }
 }

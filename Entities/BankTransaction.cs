@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api_banco.Entities
 {
@@ -11,16 +12,24 @@ namespace api_banco.Entities
         public Guid Id { get; set; }
 
         [Required]
-        public string Sender { get; set; }
+        [ForeignKey("SenderId")]
+        public Guid SenderId { get; set; }
+        public virtual User Sender { get; set; }
 
         [Required]
-        public string Recipient { get; set; }
+        [ForeignKey("RecipientId")]
+        public Guid RecipientId { get; set; }
+        public virtual User Recipient {  get; set; }
 
         [Required]
         public decimal Amount { get; set;}
 
         public DateTime SendingAt { get; set; }
 
-        public string description { get; set; }
+        public string Description { get; set; }
+
+        [Required]
+        public string TransactionType { get; set; }
+
     }
 }

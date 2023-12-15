@@ -1,5 +1,7 @@
 ﻿using api_banco.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace api_banco.Database
 {
@@ -11,5 +13,24 @@ namespace api_banco.Database
 
         public DbSet<BankTransaction> BankTransactions { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BankTransaction>()
+                .HasOne(t => t.Sender)
+                .WithMany(u => u.Transactions)
+                .HasForeignKey(t => t.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BankTransaction>()
+                .HasOne(t => t.Recipient)
+                .WithMany()
+                .HasForeignKey(t => t.RecipientId)
+                .OnDelete(DeleteBehavior.Restrict); 
+        }
+
     }
+
+
 }

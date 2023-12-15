@@ -20,8 +20,6 @@ namespace api_banco.Models
         [Required]
         public string Password { get; set; }
 
-        public decimal Accountbalance { get; set; }
-
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -52,12 +50,10 @@ namespace api_banco.Models
         public bool IsDeleted { get; set; }
     }
 
-    public class UserModelUpdate
+    public class UserModelUpdateRequest
     {
-        public string Name { get; set; }
-
-        public string Password { get; set; }
-
-        public string Email { get; set; }
+        public string? Name { get; set; }
+        public string? Password { get; set; }
+        public string? Email { get; set; }
     }
 }

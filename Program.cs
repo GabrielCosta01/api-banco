@@ -4,6 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using api_banco.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,12 +29,23 @@ if (string.IsNullOrEmpty(secretKey))
     throw new InvalidOperationException("A chave secreta não está configurada.");
 }
 
+// Configuração do DinkToPdf
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddSingleton(new GlobalSettings
+{
+    ColorMode = ColorMode.Color,
+    Orientation = Orientation.Portrait,
+    PaperSize = PaperKind.A4,
+    Margins = new MarginSettings { Top = 10, Bottom = 10, Left = 10, Right = 10 }
+});
+
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<TokenService>();
-
-builder.Services.AddControllers();
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
 
 // Configurações do Swagger
 builder.Services.AddSwaggerGen(c =>

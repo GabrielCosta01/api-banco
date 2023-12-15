@@ -1,6 +1,8 @@
 ﻿using api_banco.Database;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace api_banco.Entities
@@ -10,7 +12,6 @@ namespace api_banco.Entities
         private string _password;
         public User()
         {
-            Accountbalance = 0;
             Id = Guid.NewGuid();
             NumberAccount = Guid.NewGuid();
             Created_At = DateTime.UtcNow;
@@ -33,16 +34,51 @@ namespace api_banco.Entities
         public string Password
         {
             get { return _password; }
-            set { _password = BCryptNet.HashPassword(value); } 
+            set
+            {
+                if (!string.IsNullOrEmpty(value))_password = BCryptNet.HashPassword(value);
+            }
         }
-
-        public decimal Accountbalance { get; set; }
 
         public DateTime Created_At { get; set; }
 
         public DateTime Updated_At { get; set;}
 
         public bool IsDeleted { get; set; }
+
+        public virtual ICollection<BankTransaction> Transactions { get; set; }
+
+        public decimal AccountBalance => CalculateBalance();
+
+        public decimal CalculateBalance()
+        {
+            decimal balance = 0;
+
+            if (Transactions != null)
+            {
+                foreach (var transaction in Transactions)
+                {
+                    if (transaction.TransactionType == "deposit")
+                    {
+                        balance += transaction.Amount;
+                    }
+                    else if (transaction.TransactionType == "withdrawal")
+                    {
+                        balance -= transaction.Amount;
+                    }
+                    else if (transaction.TransactionType == "transfer" && transaction.RecipientId != Id)
+                    {
+                        balance -= transaction.Amount;
+                    }
+                    else if (transaction.TransactionType == "transfer" && transaction.RecipientId == Id)
+                    {
+                        balance += transaction.Amount;
+                    }
+                }
+            }
+
+            return balance;
+        }
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
