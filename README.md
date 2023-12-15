@@ -59,7 +59,6 @@ A API utiliza o Swagger para documentação. Após iniciar a aplicação, acesse
 - ASP.NET Core 8
 - PostgreSQL
 - Entity Framework Core
-- DinkToPdf (para geração de PDFs)
 
 ---
 
